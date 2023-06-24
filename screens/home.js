@@ -55,9 +55,7 @@ const Home = () => {
     setRefreshing(false);
   };
 
-  return !data && !stickyData ? (
-    <Loader />
-  ) : (
+  return data && stickyData ? (
     <FlatList
       onRefresh={onRefresh}
       refreshing={refreshing}
@@ -106,6 +104,8 @@ const Home = () => {
         />
       )}
     ></FlatList>
+  ) : (
+    <Loader />
   );
 };
 

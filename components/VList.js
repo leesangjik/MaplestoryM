@@ -37,14 +37,21 @@ const CreateDate = styled.Text`
   color: grey;
 `;
 
-const ReadCount = styled.Text`
+const ReadCount = styled.View`
   padding-left: 5px;
-  color: grey;
+  flex-direction: row;
+  align-items: center;
 `;
 
-const LikeCount = styled.Text`
+const LikeCount = styled.View`
   padding-left: 5px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const Text = styled.Text`
   color: grey;
+  padding-left: 5px;
 `;
 
 const VList = ({
@@ -69,12 +76,12 @@ const VList = ({
           <User>{nickname}</User>
           <CreateDate>{createDate}</CreateDate>
           <ReadCount>
-            <Ionicons name="eye-outline" />
-            {readCount}
+            <Ionicons name="eye-outline" color="grey" size={16} />
+            <Text>{readCount}</Text>
           </ReadCount>
           <LikeCount>
-            <Ionicons name="heart-outline" />
-            {likeCount}
+            <Ionicons name="heart-outline" color="grey" size={16} />
+            <Text>{likeCount}</Text>
           </LikeCount>
         </ColumnInfo>
       </ContainerColumn>
