@@ -33,7 +33,7 @@ const GetDate = (item) => {
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery(
+  const { data } = useQuery(
     ["MaplestoryM", "BannerImg"],
     async () =>
       await fetch(
@@ -80,6 +80,8 @@ const Home = () => {
                     key={img.createDate}
                     imageUrl={img.webImageUrl}
                     fulldata={img}
+                    linkType={img.linkType}
+                    linkValue={img.linkValue}
                   />
                 ))
               : null}

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 import styled from "styled-components/native";
 import Loader from "./Loader";
 import { useNavigation } from "@react-navigation/native";
@@ -9,15 +9,19 @@ const BtnImg = styled.TouchableOpacity`
   flex: 1;
 `;
 
-const Slide = ({ imageUrl, fulldata }) => {
+const Slide = ({ imageUrl, fulldata, linkType, linkValue }) => {
   const navigation = useNavigation();
-  const goDetail = () => {
-    navigation.navigate("Stack", {
-      screen: "Detail",
-      params: {
-        ...fulldata,
-      },
-    });
+  const goDetail = async () => {
+    if (linkType === "THREAD") {
+      navigation.navigate("Stack", {
+        screen: "Detail",
+        params: {
+          ...fulldata,
+        },
+      });
+    } else {
+      await Linking.openURL(linkValue);
+    }
   };
   return fulldata ? (
     <BtnImg onPress={goDetail}>
