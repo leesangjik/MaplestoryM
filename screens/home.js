@@ -1,50 +1,14 @@
-import React from "react";
-import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, FlatList } from "react-native";
 import Swiper from "react-native-swiper";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "../components/Loader";
 import styled from "styled-components/native";
-import { Ionicons } from "@expo/vector-icons";
+import Slide from "../components/Slide";
+import VList from "../components/VList";
 
-const BgImg = styled.Image``;
-const Title = styled.Text``;
 const HSeparator = styled.View`
   width: 20px;
-`;
-
-const MainContainer = styled.View`
-  padding: 0px 10px;
-`;
-const ContainerColumn = styled.View`
-  padding: 6px 0;
-`;
-const TitleBox = styled.View`
-  flex-direction: row;
-`;
-const BoardTitle = styled.Text`
-  font-size: 12px;
-  color: orange;
-  font-weight: 600;
-  padding-right: 10px;
-`;
-
-const ColumnInfo = styled.View`
-  flex-direction: row;
-`;
-const User = styled.Text`
-  padding-right: 10px;
-  color: grey;
-`;
-const CreateDate = styled.Text`
-  color: grey;
-`;
-const ReadCount = styled.Text`
-  padding-left: 5px;
-  color: grey;
-`;
-const LikeCount = styled.Text`
-  padding-left: 5px;
-  color: grey;
 `;
 
 const MainTitleBox = styled.View``;
@@ -67,7 +31,9 @@ const GetDate = (item) => {
 };
 
 const Home = () => {
-  const { data } = useQuery(
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery(
     ["MaplestoryM", "BannerImg"],
     async () =>
       await fetch(
@@ -83,10 +49,18 @@ const Home = () => {
       ).then((response) => response.json())
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries(["MaplestoryM"]);
+    setRefreshing(false);
+  };
+
   return !data && !stickyData ? (
     <Loader />
   ) : (
     <FlatList
+      onRefresh={onRefresh}
+      refreshing={refreshing}
       ListHeaderComponent={
         <>
           <Swiper
@@ -103,18 +77,13 @@ const Home = () => {
             showsPagination={false}
           >
             {data?.communityHome?.webPlace?.mobileBanners
-              ? data?.communityHome?.webPlace?.mobileBanners.map(
-                  (img, index) => (
-                    <View style={{ flex: 1 }} key={index}>
-                      <BgImg
-                        style={StyleSheet.absoluteFill}
-                        key={img.createDate}
-                        source={{ uri: img.webImageUrl }}
-                        resizeMode="stretch"
-                      />
-                    </View>
-                  )
-                )
+              ? data?.communityHome?.webPlace?.mobileBanners.map((img) => (
+                  <Slide
+                    key={img.createDate}
+                    imageUrl={img.webImageUrl}
+                    fulldata={img}
+                  />
+                ))
               : null}
           </Swiper>
           <MainTitleBox>
@@ -126,30 +95,15 @@ const Home = () => {
       keyExtractor={(item) => item.createDate + ""}
       ItemSeparatorComponent={HSeparator}
       renderItem={({ item }) => (
-        <MainContainer>
-          <ContainerColumn>
-            <TitleBox>
-              <BoardTitle>{"[" + item.boardTitle + "]"}</BoardTitle>
-              <Title>
-                {item.title.length > 20
-                  ? item.title.slice(0, 20) + "..."
-                  : item.title}
-              </Title>
-            </TitleBox>
-            <ColumnInfo>
-              <User>{item?.user.nickname}</User>
-              <CreateDate>{GetDate(item?.createDate)}</CreateDate>
-              <ReadCount>
-                <Ionicons name="eye-outline" />
-                {item.readCount}
-              </ReadCount>
-              <LikeCount>
-                <Ionicons name="heart-outline" />
-                {item.likeCount}
-              </LikeCount>
-            </ColumnInfo>
-          </ContainerColumn>
-        </MainContainer>
+        <VList
+          boardTitle={item.boardTitle}
+          title={item.title}
+          nickname={item?.user.nickname || ""}
+          createDate={GetDate(item?.createDate)}
+          readCount={item.readCount}
+          likeCount={item.likeCount}
+          fulldata={item}
+        />
       )}
     ></FlatList>
   );

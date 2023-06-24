@@ -12,7 +12,7 @@ const Tabs = () => {
         name="home"
         component={Home}
         options={{
-          title: "메이플스토리M",
+          headerTitle: "메이플스토리M",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name={"home-outline"} color={color} size={size} />
           ),
