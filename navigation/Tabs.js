@@ -9,9 +9,10 @@ const Tabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
+        name="home"
         component={Home}
         options={{
+          title: "메이플스토리M",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name={"home-outline"} color={color} size={size} />
           ),
