@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../screens/home";
 import Setting from "../screens/setting";
+import Search from "../screens/search";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +17,16 @@ const Tabs = () => {
           headerTitle: "메이플스토리M",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name={"home-outline"} color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="search"
+        component={Search}
+        options={{
+          headerTitle: "검색",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name={"search-outline"} color={color} size={size} />
           ),
         }}
       />
