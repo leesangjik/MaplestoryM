@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Detail from "../screens/detail";
+import BannerDetail from "../screens/bannerDetail";
 
 const NativeStack = createNativeStackNavigator();
 
@@ -11,7 +11,7 @@ const Stack = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <NativeStack.Screen name="Detail" component={Detail} />
+      <NativeStack.Screen name="BannerDetail" component={BannerDetail} />
     </NativeStack.Navigator>
   );
 };

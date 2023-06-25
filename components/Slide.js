@@ -14,7 +14,7 @@ const Slide = ({ imageUrl, fulldata, linkType, linkValue }) => {
   const goDetail = async () => {
     if (linkType === "THREAD") {
       navigation.navigate("Stack", {
-        screen: "Detail",
+        screen: "BannerDetail",
         params: {
           ...fulldata,
         },
