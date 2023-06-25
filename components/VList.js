@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import Loader from "./Loader";
+import { useNavigation } from "@react-navigation/native";
 
 const MainContainer = styled.View`
   padding: 0px 10px;
@@ -54,6 +55,8 @@ const Text = styled.Text`
   padding-left: 5px;
 `;
 
+const BtnNews = styled.TouchableOpacity``;
+
 const VList = ({
   boardTitle,
   title,
@@ -63,29 +66,40 @@ const VList = ({
   likeCount,
   fulldata,
 }) => {
+  const navigation = useNavigation();
+  const goDetail = () => {
+    navigation.navigate("Stack", {
+      screen: "MainNewsDetail",
+      params: {
+        ...fulldata,
+      },
+    });
+  };
   return fulldata ? (
-    <MainContainer>
-      <ContainerColumn>
-        <TitleBox>
-          <BoardTitle>{"[" + boardTitle + "]"}</BoardTitle>
-          <Title>
-            {title.length > 20 ? title.slice(0, 20) + "..." : title}
-          </Title>
-        </TitleBox>
-        <ColumnInfo>
-          <User>{nickname}</User>
-          <CreateDate>{createDate}</CreateDate>
-          <ReadCount>
-            <Ionicons name="eye-outline" color="grey" size={16} />
-            <Text>{readCount}</Text>
-          </ReadCount>
-          <LikeCount>
-            <Ionicons name="heart-outline" color="grey" size={16} />
-            <Text>{likeCount}</Text>
-          </LikeCount>
-        </ColumnInfo>
-      </ContainerColumn>
-    </MainContainer>
+    <BtnNews onPress={goDetail}>
+      <MainContainer>
+        <ContainerColumn>
+          <TitleBox>
+            <BoardTitle>{"[" + boardTitle + "]"}</BoardTitle>
+            <Title>
+              {title.length > 20 ? title.slice(0, 20) + "..." : title}
+            </Title>
+          </TitleBox>
+          <ColumnInfo>
+            <User>{nickname}</User>
+            <CreateDate>{createDate}</CreateDate>
+            <ReadCount>
+              <Ionicons name="eye-outline" color="grey" size={16} />
+              <Text>{readCount}</Text>
+            </ReadCount>
+            <LikeCount>
+              <Ionicons name="heart-outline" color="grey" size={16} />
+              <Text>{likeCount}</Text>
+            </LikeCount>
+          </ColumnInfo>
+        </ContainerColumn>
+      </MainContainer>
+    </BtnNews>
   ) : (
     <Loader />
   );
