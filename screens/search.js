@@ -6,6 +6,8 @@ import VList from "../components/VList";
 import { GetDate } from "../utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STORAGE_KEY } from "./home";
 
 const DataContainer = styled.FlatList`
   padding: 5px 0;
@@ -28,6 +30,7 @@ const Btn = styled.TouchableOpacity``;
 const Search = () => {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [board, setBoard] = useState({});
 
   const searchData = useQuery(
     ["MaplesotryM", "search"],
@@ -68,6 +71,15 @@ const Search = () => {
       searchData.refetch();
     }
   }, [page]);
+
+  const loadBoard = async () => {
+    const boards = await AsyncStorage.getItem(STORAGE_KEY);
+    setBoard(JSON.parse(boards));
+  };
+
+  useEffect(() => {
+    loadBoard();
+  }, []);
 
   return (
     <DataContainer
@@ -111,7 +123,7 @@ const Search = () => {
       renderItem={({ item }) =>
         (
           <VList
-            boardTitle="수정예정"
+            boardTitle={board[item.boardId]}
             title={item.title}
             nickname={item.user.nickname}
             createDate={GetDate(item.createDate)}

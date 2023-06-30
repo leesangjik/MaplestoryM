@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList } from "react-native";
 import Swiper from "react-native-swiper";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import styled from "styled-components/native";
 import Slide from "../components/Slide";
 import VList from "../components/VList";
 import { GetDate } from "../utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HSeparator = styled.View`
   width: 20px;
@@ -22,6 +23,8 @@ const MainTitle = styled.Text`
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+export const STORAGE_KEY = "@board";
+
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
@@ -32,6 +35,32 @@ const Home = () => {
         "https://forum.nexon.com/api/v1/community/maplestorym?alias=maplestorym&countryCode=kr"
       ).then((response) => response.json())
   );
+
+  const getBoardType = async () => {
+    if (data) {
+      const boards = {};
+      data.boards.map((item) => {
+        if (item.boards) {
+          item.boards.map((x) => {
+            boards[x.boardId] = x.title;
+          });
+        }
+        boards[item.boardId] = item.title;
+      });
+      keys = await AsyncStorage.getAllKeys();
+      if (!keys.includes(STORAGE_KEY)) {
+        await saveBanner(boards);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getBoardType();
+  }, []);
+
+  const saveBanner = async (item) => {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(item));
+  };
 
   const { data: stickyData } = useQuery(
     ["MaplestoryM", "stickyData"],
